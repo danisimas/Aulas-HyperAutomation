@@ -10,7 +10,7 @@ matriz_soma = np.sum(matriz)
 
 matriz_transporta = np.transpose(matriz)
 
-matriz_mult_transporta = np.multiply(matriz_transporta,matriz)
+matriz_mult_transporta = np.dot(matriz_transporta,matriz)
 
 
 print(f"Matriz original: {matriz}\n")
