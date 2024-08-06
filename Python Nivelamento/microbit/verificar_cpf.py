@@ -1,3 +1,44 @@
+from microbit import *
+import radio
+
+radio.config(group=53)
+radio.on()
+
+cpfs_validos = []
+cpfs_invalidos = []
+cpf = 0
+
+def enviar_cpf():
+    cpf = input("Digite seu CPF: ")
+    return cpf
+
+def exibir_contagem():
+    display.scroll("Validos: " + str(len(cpfs_validos)))
+    display.scroll("Invalidos: " + str(len(cpfs_invalidos)))
+
+def receber_cpf(cpf, valido):
+    if len(cpf)==0:
+        pass
+    if len(cpf)!=0 and valido=='valido':
+        display.scroll("Valido")
+        cpfs_validos.append((cpf, "Valido"))
+    else:
+        display.scroll("Invalido")
+        cpfs_invalidos.append((cpf, "Invalido"))
+
+while True:
+    if button_a.was_pressed():
+        cpf_enviar = enviar_cpf()
+        if cpf_enviar.lower() == "parar":
+            exibir_contagem()
+        radio.send(cpf_enviar)
+        cpf = cpf_enviar
+    if button_b.was_pressed():
+        valido = radio.receive()
+        receber_cpf(cpf,valido)
+    if accelerometer.was_gesture('shake'):
+        break
+        
 # Imports go at the top
 from microbit import *
 
@@ -13,7 +54,6 @@ def verificacao(cpf):
 
         for i, digito in enumerate(cpf_s):
             soma += int(digito) * peso
-            print(digito)
             peso += 1
             
         digito = soma % 11
@@ -36,35 +76,6 @@ while True:
     cpf = radio.receive()
     if cpf:
        if verificacao(cpf):
-           radio.send('Valido')
+           radio.send('valido')
        else:
-           radio.send("Invalido")
-
-
-
-from microbit import *
-import radio
-
-radio.config(group=53)
-radio.on()
-
-cpfs_validos = []
-cpfs_invalidos = []
-
-def enviar_cpf():
-    cpf = input("Digite seu CPF: ")
-    return cpf
-
-def receber_cpf(cpf,valido):
-    if valido=='Valido':
-        display.scroll("Valido")
-        cpfs_validos.append((cpf, "Valido"))
-    else:
-        display.scroll("Invalido")
-        cpfs_invalidos.append((cpf, "Invalido"))
-
-while True:
-    cpf_enviar = enviar_cpf()
-    radio.send(cpf_enviar)
-    valido = radio.receive()
-    receber_cpf(cpf_enviar, valido)
+           radio.send('invalido')
