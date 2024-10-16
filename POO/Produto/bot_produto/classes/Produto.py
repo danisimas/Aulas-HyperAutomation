@@ -14,14 +14,15 @@ class Produto:
         self.preco = produto.preco
         self.quantidade = produto.quantidade
     
-
-
-
-if __name__ == "__main__":
-    produto1 = Produto("Notebook", 3000.00, 10)
-    produto1.mostrar_dados()
     
-    produto2 = Produto("Mouse", 20.00, 50)
-    produto1.atualizar_produto(produto2)
-    produto1.mostrar_dados()
+
+
+
+# if __name__ == "__main__":
+#     produto1 = Produto("Notebook", 3000.00, 10)
+#     produto1.mostrar_dados()
+    
+#     produto2 = Produto("Mouse", 20.00, 50)
+#     produto1.atualizar_produto(produto2)
+#     produto1.mostrar_dados()
     
