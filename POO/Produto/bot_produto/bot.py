@@ -30,10 +30,28 @@ from botcity.maestro import *
 
 from webdriver_manager.chrome import ChromeDriverManager
 
-from classes import Produto
 
 # Disable errors if we are not connected to Maestro
 BotMaestroSDK.RAISE_NOT_CONNECTED = False
+
+
+class Produtos:
+    def __init__(self, nome, preco, quantidade):
+        self.nome = nome
+        self.preco = preco
+        self.quantidade = quantidade
+    
+    def mostrar_dados(self):
+        print(f"Nome: {self.nome}")
+        print(f"Preço: R$ {self.preco:.2f}")
+        print(f"Quantidade: {self.quantidade}")
+    
+    def atualizar_produto(self, produto):
+        self.nome = produto.nome
+        self.preco = produto.preco
+        self.quantidade = produto.quantidade
+    
+    
 
 
 def main():
@@ -60,7 +78,7 @@ def main():
     # Opens the BotCity website.
     bot.browse("http://127.0.0.1:5000/")
 
-    produto = Produto("Telefone", 50, 100)
+    produto = Produtos("Telefone", 50, 100)
 
     bot.find_element('//*[@id="nome"]',By.XPATH).send_keys(produto.nome)
     bot.find_element('//*[@id="preco"]', By.XPATH).send_keys(produto.preco)
@@ -68,7 +86,7 @@ def main():
     bot.find_element('/html/body/div/form/input[4]', By.XPATH).click()
 
     # Wait 3 seconds before closing
-    bot.wait(3000)
+    bot.wait(6000)
 
     # Finish and clean up the Web Browser
     # You MUST invoke the stop_browser to avoid
