@@ -46,7 +46,7 @@ class Escola():
     
 
 if __name__ == "__main__":
-    escola = Escola("Universidade Federal de Minas Gerais")
+    escola = Escola("Universidade Federal do Amazonas")
     escola.adicionar_curso()
     escola.imprimir_dados()
     escola.cursos[0].adicionar_aluno()
