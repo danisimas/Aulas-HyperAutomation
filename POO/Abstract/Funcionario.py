@@ -32,7 +32,7 @@ class Funcionario(ABC):
     
     @matricula.setter
     def matricula(self, matricula):
-        if matricula.strip() == "":
+        if matricula is None:
             raise ValueError("Matrícula inválida")
         self._matricula = matricula
     
