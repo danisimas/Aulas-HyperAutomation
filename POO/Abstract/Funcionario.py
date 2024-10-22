@@ -2,14 +2,20 @@ from abc import ABC, abstractmethod
 import datetime
 
 class Funcionario(ABC):
-    def __init__(self, nome, matricula):
+    def __init__(self, nome, matricula, numero_de_projetos):
         self.nome = nome
         self.matricula = matricula
+        self.numero_de_projetos = numero_de_projetos
     
     @abstractmethod
     def calcular_salario(self):
         pass
     
+    def calcular_pd(self):
+        if self.numero_de_projetos > 0:
+            return self.numero_de_projetos * 1000
+        return 0
+
     @property
     def nome(self):
         return self._nome
@@ -30,139 +36,125 @@ class Funcionario(ABC):
             raise ValueError("Matrícula inválida")
         self._matricula = matricula
     
+    @property
+    def numero_de_projetos(self):
+        return self._numero_de_projetos
+    
+    @numero_de_projetos.setter
+    def numero_de_projetos(self, numero_de_projetos):
+        if numero_de_projetos < 0:
+            raise ValueError("Número de projetos não pode ser negativo")
+        self._numero_de_projetos = numero_de_projetos
+    
     def __str__(self):
-        return f"Nome: {self.nome}, Matrícula: {self.matricula}"
+        return f"Nome: {self.nome}, Matrícula: {self.matricula}, Número de projetos: {self.numero_de_projetos}"
+
 
 class FuncionarioComissario(Funcionario):
-    def __init__(self, nome, matricula, salarioBase, comissao, totalVendas):
-        super().__init__(nome, matricula)
-        self.salarioBase = salarioBase
+    def __init__(self, nome, matricula, numero_de_projetos, salario_base, comissao, total_vendas):
+        super().__init__(nome, matricula, numero_de_projetos)
+        self.salario_base = salario_base
         self.comissao = comissao
-        self.totalVendas = totalVendas
+        self.total_vendas = total_vendas
 
     @property
-    def salarioBase(self):
-        return self._salarioBase
+    def salario_base(self):
+        return self._salario_base
 
-    @salarioBase.setter
-    def salarioBase(self, salarioBase):
-        if salarioBase <= 0:
+    @salario_base.setter
+    def salario_base(self, salario_base):
+        if salario_base <= 0:
             raise ValueError("Salário base deve ser maior que zero")
-        self._salarioBase = salarioBase
+        self._salario_base = salario_base
     
-    @property
-    def comissao(self):
-        return self._comissao
-    
-    @comissao.setter
-    def comissao(self, comissao):
-        if comissao < 0 or comissao > 1:
-            raise ValueError("Comissão deve ser um valor entre 0 e 1")
-        self._comissao = comissao
-    
-    @property
-    def totalVendas(self):
-        return self._totalVendas
-    
-    @totalVendas.setter
-    def totalVendas(self, totalVendas):
-        if totalVendas < 0:
-            raise ValueError("Total de vendas não pode ser negativo")
-        self._totalVendas = totalVendas
-
-
     def calcular_salario(self):
-        if self.totalVendas <= 0 or self.comissao <= 0:
+        if self.total_vendas <= 0 or self.comissao <= 0:
             raise ValueError("Total de vendas e comissão precisam ser maiores que zero")
-        return self.salarioBase + (self.comissao * self.totalVendas)
+        salario = self.salario_base + (self.comissao * self.total_vendas)
+        salario += self.calcular_pd()
+        return salario
     
     def __str__(self):
-        return super().__str__() + f", Salário Base: {self.salarioBase}, Comissão: {self.comissao}, Total de Vendas: {self.totalVendas}"
+        return super().__str__() + f", Salário Base: {self.salario_base}, Comissão: {self.comissao}, Total de Vendas: {self.total_vendas}"
+
 
 class FuncionarioHoralista(Funcionario):
-    def __init__(self, nome, matricula, valorPorHora, horasPorDia):
-        super().__init__(nome, matricula)
-        self.valorPorHora = valorPorHora 
-        self.horasPorDia = horasPorDia
+    def __init__(self, nome, matricula, numero_de_projetos, valor_por_hora, horas_por_dia):
+        super().__init__(nome, matricula, numero_de_projetos)
+        self.valor_por_hora = valor_por_hora
+        self.horas_por_dia = horas_por_dia
 
     @property
-    def valorPorHora(self):
-        return self._valorPorHora
+    def valor_por_hora(self):
+        return self._valor_por_hora
 
-    @valorPorHora.setter
-    def valorPorHora(self, valorPorHora):
-        if valorPorHora <= 0:
+    @valor_por_hora.setter
+    def valor_por_hora(self, valor_por_hora):
+        if valor_por_hora <= 0:
             raise ValueError("Valor por hora deve ser maior que zero")
-        self._valorPorHora = valorPorHora
+        self._valor_por_hora = valor_por_hora
 
     @property
-    def horasPorDia(self):
-        return self._horasPorDia
+    def horas_por_dia(self):
+        return self._horas_por_dia
 
-    @horasPorDia.setter
-    def horasPorDia(self, horasPorDia):
-        if horasPorDia <= 0:
+    @horas_por_dia.setter
+    def horas_por_dia(self, horas_por_dia):
+        if horas_por_dia <= 0:
             raise ValueError("Horas por dia deve ser maior que zero")
-        self._horasPorDia = horasPorDia
+        self._horas_por_dia = horas_por_dia
 
     def simular_pagamento_mensal(self, ano, mes):
-        feriados = [
-            datetime.date(ano, 1, 1),   # Ano Novo
-            datetime.date(ano, 9, 7),   # Independência
-            datetime.date(ano, 12, 25), # Natal
-            datetime.date(ano, 10, 24), # Aniversário de mANAUS
-            datetime.date(ano, 10, 28)  # Dia do Funcionário Público
-        ]
-
         dias_no_mes = (datetime.date(ano, mes % 12 + 1, 1) - datetime.timedelta(days=1)).day
-        
-        total_horas_trabalhadas = 0
-        for dia in range(1, dias_no_mes + 1):
-            data_atual = datetime.date(ano, mes, dia)
-            total_horas_trabalhadas += self.horasPorDia
-
-        salarioTotal = self.valorPorHora * total_horas_trabalhadas
-        return salarioTotal
-
+        total_horas_trabalhadas = self.horas_por_dia * dias_no_mes
+        salario_total = self.valor_por_hora * total_horas_trabalhadas
+        return salario_total
+    
     def calcular_salario(self):
-        return self.simular_pagamento_mensal(2024, 10)
+        salario = self.simular_pagamento_mensal(2024, 10)
+        salario += self.calcular_pd()
+        return salario
     
     def __str__(self):
-        return super().__str__() + f", Valor Por Hora: {self.valorPorHora}, Horas Por Dia: {self.horasPorDia}"
+        return super().__str__() + f", Valor Por Hora: {self.valor_por_hora}, Horas Por Dia: {self.horas_por_dia}"
+
 
 class FuncionarioMensalista(Funcionario):
-    def __init__(self, nome, matricula, salarioBase):
-        super().__init__(nome, matricula)
-        self.salarioBase = salarioBase
+    def __init__(self, nome, matricula, numero_de_projetos, salario_base):
+        super().__init__(nome, matricula, numero_de_projetos)
+        self.salario_base = salario_base
 
     @property
-    def salarioBase(self):
-        return self._salarioBase
+    def salario_base(self):
+        return self._salario_base
 
-    @salarioBase.setter
-    def salarioBase(self, salarioBase):
-        if salarioBase <= 0:
+    @salario_base.setter
+    def salario_base(self, salario_base):
+        if salario_base <= 0:
             raise ValueError("Salário base deve ser maior que zero")
-        self._salarioBase = salarioBase
+        self._salario_base = salario_base
     
     def calcular_salario(self):
-        return self.salarioBase
+        salario = self.salario_base
+        salario += self.calcular_pd()
+        return salario
     
     def __str__(self):
-        return super().__str__() + f", Salário Base: {self.salarioBase}"
-    
+        return super().__str__() + f", Salário Base: {self.salario_base}"
+
 
 def processar_pagamentos():
     funcionarios = [
-        FuncionarioComissario("Daniele", "123", 5000, 0.1, 10000),
-        FuncionarioHoralista("Luiz", "456", 50, 8),  
-        FuncionarioMensalista("Carlos", "789", 7000)
+        FuncionarioComissario("Daniele", "123", 0, 5000, 0.1, 10000), 
+        FuncionarioHoralista("Luiz", "456", 0, 50, 8), 
+        FuncionarioMensalista("Carlos", "789", 1, 7000)  
     ]
     
     for funcionario in funcionarios:
         print(f"Funcionário: {funcionario}")
         print(f"Salário: R$ {funcionario.calcular_salario():.2f}")
         print("-" * 50)
+
 
 if __name__ == "__main__":
     processar_pagamentos()
