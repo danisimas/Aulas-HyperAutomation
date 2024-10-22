@@ -1,0 +1,13 @@
+
+funcionarios= [
+    {"nome": "Daniele Simas", "matricula": "123", "numero_de_projetos": 0, "salario_base": 1.0, "comissao": None, "total_vendas": None, "valor_por_hora": None, "horas_por_dia": None},
+    {"nome": "Roberto", "matricula": "234", "numero_de_projetos": 0, "salario_base": None, "comissao": None, "total_vendas": None, "valor_por_hora": 60.0, "horas_por_dia": 4.0},
+    {"nome": "Alice Oliveira", "matricula": "345", "numero_de_projetos": 3, "salario_base": 2500.0, "comissao": 0.1, "total_vendas": 15000.0, "valor_por_hora": None, "horas_por_dia": None},
+    {"nome": "Bruno Costa", "matricula": "456", "numero_de_projetos": 1, "salario_base": 3000.0, "comissao": 0.05, "total_vendas": 5000.0, "valor_por_hora": None, "horas_por_dia": None},
+    {"nome": "Carla Mendes", "matricula": "567", "numero_de_projetos": 2, "salario_base": None, "comissao": None, "total_vendas": None, "valor_por_hora": 75.0, "horas_por_dia": 5.0},
+    {"nome": "Daniel Pereira", "matricula": "678", "numero_de_projetos": 4, "salario_base": 2800.0, "comissao": 0.08, "total_vendas": 12000.0, "valor_por_hora": None, "horas_por_dia": None},
+    {"nome": "Fernanda Lima", "matricula": "789", "numero_de_projetos": 0, "salario_base": None, "comissao": None, "total_vendas": None, "valor_por_hora": 50.0, "horas_por_dia": 8.0},
+    {"nome": "Gustavo Santos", "matricula": "890", "numero_de_projetos": 5, "salario_base": 3200.0, "comissao": 0.15, "total_vendas": 20000.0, "valor_por_hora": None, "horas_por_dia": None},
+    {"nome": "Helena Ferreira", "matricula": "901", "numero_de_projetos": 2, "salario_base": None, "comissao": None, "total_vendas": None, "valor_por_hora": 80.0, "horas_por_dia": 6.0},
+    {"nome": "Igor Almeida", "matricula": "012", "numero_de_projetos": 1, "salario_base": 2700.0, "comissao": 0.1, "total_vendas": 10000.0, "valor_por_hora": None, "horas_por_dia": None}
+]
