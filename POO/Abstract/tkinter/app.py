@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from abc import ABC, abstractmethod
 import datetime
 import json
+import pandas as pd
 
 # Classes de Funcionário
 class Funcionario(ABC):
@@ -250,18 +251,18 @@ class App:
             
             tipo = self.tipo_funcionario_var.get()
             if tipo == "Comissário":
-                salario = float(self.salario_var.get().strip()) if self.salario_var.get().strip() else 0.0
-                comissao = float(self.comissao_var.get().strip()) / 100 if self.comissao_var.get().strip() else 0.0
-                total_vendas = float(self.total_vendas_var.get().strip()) if self.total_vendas_var.get().strip() else 0.0
+                salario = float(self.salario_var.get()) if self.salario_var.get().strip() else 0.0
+                comissao = float(self.comissao_var.get()) / 100 if self.comissao_var.get().strip() else 0.0
+                total_vendas = float(self.total_vendas_var.get()) if self.total_vendas_var.get().strip() else 0.0
                 funcionario = FuncionarioComissario(nome, matricula, num_proj, salario, comissao, total_vendas)
 
             elif tipo == "Horalista":
-                valor_hora = float(self.valor_hora_var.get().strip()) if self.valor_hora_var.get().strip() else 0.0
-                horas_dia = float(self.horas_dia_var.get().strip()) if self.horas_dia_var.get().strip() else 0.0
+                valor_hora = float(self.valor_hora_var.get()) if self.valor_hora_var.get().strip() else 0.0
+                horas_dia = float(self.horas_dia_var.get()) if self.horas_dia_var.get().strip() else 0.0
                 funcionario = FuncionarioHoralista(nome, matricula, num_proj, valor_hora, horas_dia)
 
             else:  # Mensalista
-                salario = float(self.salario_var.get().strip()) if self.salario_var.get().strip() else 0.0
+                salario = float(self.salario_var.get()) if self.salario_var.get() else 0.0
                 funcionario = FuncionarioMensalista(nome, matricula, num_proj, salario)
 
             # Adicionar o funcionário à lista e salvar em um arquivo
@@ -294,7 +295,7 @@ class App:
     def processar_pagamentos(self):
         resultado = ""
         for funcionario in self.funcionarios:
-            resultado += f"Funcionário: {funcionario}\nSalário: R$ {funcionario.calcular_salario():.2f}\n{'-'*50}\n"
+            resultado += f"Funcionário: {funcionario}\nSalário: R$ {funcionario.calcular_salario()}\n{'-'*50}\n"
 
         messagebox.showinfo("Pagamentos", resultado)
 
