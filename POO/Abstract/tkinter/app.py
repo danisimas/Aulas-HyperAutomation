@@ -148,6 +148,22 @@ class FuncionarioMensalista(Funcionario):
         return super().__str__() + f", Salário Base: {self.salario_base}"
 
 
+def calcular_salario(funcionario):
+    if isinstance(funcionario, FuncionarioComissario):
+        salario = funcionario.calcular_salario()
+        
+    elif isinstance(funcionario, FuncionarioHoralista):
+        salario = funcionario.calcular_salario()
+        
+    elif isinstance(funcionario, FuncionarioMensalista):
+        salario = funcionario.calcular_salario()
+    else:
+        print("Tipo de funcionário não reconhecido")
+    return salario
+
+
+
+
 class App:
     def __init__(self, root):
         self.root = root
@@ -254,7 +270,8 @@ class App:
 
     def get_float_value(self, var, default=0.0):
         try:
-            value = float(var.get().strip())
+            # Substitui vírgula por ponto para tratar entradas no padrão BR
+            value = float(var.get().replace(",", ".").strip())
             return value if value > 0 else default
         except ValueError:
             return default
@@ -274,7 +291,7 @@ class App:
     def cadastrar_funcionario(self):
         try:
             nome = self.nome_var.get()
-            matricula = self.matricula_var.get()
+            matricula = self.matricula_var.get().strip()
             num_proj = int(self.num_proj_var.get()) if self.num_proj_var.get().strip() else 0
             
             tipo = self.tipo_funcionario_var.get()
@@ -283,24 +300,25 @@ class App:
                 comissao = self.get_float_value(self.comissao_var) 
                 total_vendas = self.get_float_value(self.total_vendas_var)
                 funcionario = FuncionarioComissario(nome, matricula, num_proj, salario_base, comissao, total_vendas)
-                salario_total = funcionario.calcular_salario()
+                salario_total = calcular_salario(funcionario)
 
             elif tipo == "Horalista":
                 valor_hora = self.get_float_value(self.valor_hora_var)
                 horas_dia = self.get_float_value(self.horas_dia_var)
                 funcionario = FuncionarioHoralista(nome, matricula, num_proj, valor_hora, horas_dia)
-                salario_total = funcionario.calcular_salario()
+                salario_total = calcular_salario(funcionario)
 
             else:  # Mensalista
                 salario_base = self.get_float_value(self.salario_var)
                 funcionario = FuncionarioMensalista(nome, matricula, num_proj, salario_base)
-                salario_total = funcionario.calcular_salario()
+                salario_total = calcular_salario(funcionario)
 
             funcionario.salário_Total = salario_total
             self.funcionarios.append(funcionario)
             self.salvar_funcionario(funcionario)
             self.limpar_campos()
-            messagebox.showinfo("Sucesso", "Funcionário cadastrado com sucesso!")
+
+            messagebox.showinfo("Sucesso", f"Funcionário cadastrado com sucesso! ")
 
         except ValueError as e:
             messagebox.showerror("Erro", f"Erro ao cadastrar funcionário: {str(e)}")
@@ -344,6 +362,9 @@ class App:
 
                 salario = data.get("salário_Total", "N/A")
                 numero_de_projetos = data.get("numero_de_projetos", 0)
+
+                # Formata o salário para exibição
+                salario_formatado = f"R$ {salario:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
                 # Adiciona os dados na planilha Excel
                 dados_excel.append({
