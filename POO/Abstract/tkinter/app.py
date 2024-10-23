@@ -165,6 +165,7 @@ def calcular_salario(funcionario):
 
 
 class App:
+
     def __init__(self, root):
         self.root = root
         self.root.title("Cadastro de Funcionários")
@@ -185,8 +186,7 @@ class App:
 
         # Criar o layout
         self.create_widgets()
-
-
+    
 
     def create_widgets(self):
         # Título
@@ -243,6 +243,8 @@ class App:
         entry.grid(row=row, column=col + 1, padx=10, pady=5)
         return entry
 
+
+
     def atualizar_campos(self, event=None):
         tipo = self.tipo_funcionario_var.get()
         # Desabilitar ou habilitar campos com base no tipo de funcionário selecionado
@@ -275,6 +277,7 @@ class App:
             return value if value > 0 else default
         except ValueError:
             return default
+
     
     def limpar_campos(self):
         self.nome_var.set("")
@@ -370,7 +373,7 @@ class App:
                 dados_excel.append({
                     "Nome": nome,
                     "Tipo": tipo,
-                    "Salário Total": salario,
+                    "Salário Total": salario_formatado,
                     "Tem Projetos": "Sim" if numero_de_projetos > 0 else "Não"
                 })
 
@@ -378,7 +381,7 @@ class App:
                 resultado += (
                     f"Funcionário: {nome}\n"
                     f"Tipo: {tipo}\n"
-                    f"Salário: R$ {salario}\n"
+                    f"Salário: {salario_formatado}\n"
                     f"Tem Projetos: {'Sim' if numero_de_projetos > 0 else 'Não'}\n"
                     f"{'-'*50}\n"
                 )
