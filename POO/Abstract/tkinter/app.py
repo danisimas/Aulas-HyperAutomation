@@ -75,7 +75,7 @@ class FuncionarioComissario(Funcionario):
     def calcular_salario(self):
         if self.total_vendas <= 0 or self.comissao <= 0:
             raise ValueError("Total de vendas e comissão precisam ser maiores que zero")
-        salario = self.salario_base + (self.comissao * self.total_vendas)
+        salario = self.salario_base + ((self.comissao / 100 ) * self.total_vendas)
         salario += self.calcular_pd()
         return salario
     
@@ -280,7 +280,7 @@ class App:
             tipo = self.tipo_funcionario_var.get()
             if tipo == "Comissário":
                 salario_base = self.get_float_value(self.salario_var)
-                comissao = self.get_float_value(self.comissao_var) / 100
+                comissao = self.get_float_value(self.comissao_var) 
                 total_vendas = self.get_float_value(self.total_vendas_var)
                 funcionario = FuncionarioComissario(nome, matricula, num_proj, salario_base, comissao, total_vendas)
                 salario_total = funcionario.calcular_salario()
@@ -334,7 +334,14 @@ class App:
 
             for data in funcionarios_data:
                 nome = data.get("nome")
-                tipo = "Mensalista" if data.get("salario_base") else "Comissário" if data.get("comissao") else "Horalista"
+                # Identifica o tipo de funcionário com base nos atributos exclusivos
+                if data.get("comissao") is not None:
+                    tipo = "Comissário"
+                elif data.get("valor_por_hora") is not None:
+                    tipo = "Horalista"
+                else:
+                    tipo = "Mensalista"
+
                 salario = data.get("salário_Total", "N/A")
                 numero_de_projetos = data.get("numero_de_projetos", 0)
 
@@ -361,8 +368,10 @@ class App:
 
             # Mostra uma mensagem com os resultados resumidos
             messagebox.showinfo("Pagamentos", resultado)
+
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao processar pagamentos: {str(e)}")
+
 
 
 if __name__ == "__main__":
