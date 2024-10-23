@@ -5,7 +5,7 @@ import datetime
 import json
 import pandas as pd
 
-# Classes de Funcionário
+
 class Funcionario(ABC):
     def __init__(self, nome, matricula, numero_de_projetos):
         self.nome = nome
@@ -37,7 +37,7 @@ class Funcionario(ABC):
     
     @matricula.setter
     def matricula(self, matricula):
-        if matricula.strip() == "":
+        if matricula is None:
             raise ValueError("Matrícula inválida")
         self._matricula = matricula
     
@@ -53,6 +53,7 @@ class Funcionario(ABC):
     
     def __str__(self):
         return f"Nome: {self.nome}, Matrícula: {self.matricula}, Número de projetos: {self.numero_de_projetos}"
+
 
 class FuncionarioComissario(Funcionario):
     def __init__(self, nome, matricula, numero_de_projetos, salario_base, comissao, total_vendas):
@@ -80,6 +81,7 @@ class FuncionarioComissario(Funcionario):
     
     def __str__(self):
         return super().__str__() + f", Salário Base: {self.salario_base}, Comissão: {self.comissao}, Total de Vendas: {self.total_vendas}"
+
 
 class FuncionarioHoralista(Funcionario):
     def __init__(self, nome, matricula, numero_de_projetos, valor_por_hora, horas_por_dia):
@@ -121,6 +123,7 @@ class FuncionarioHoralista(Funcionario):
     def __str__(self):
         return super().__str__() + f", Valor Por Hora: {self.valor_por_hora}, Horas Por Dia: {self.horas_por_dia}"
 
+
 class FuncionarioMensalista(Funcionario):
     def __init__(self, nome, matricula, numero_de_projetos, salario_base):
         super().__init__(nome, matricula, numero_de_projetos)
@@ -144,11 +147,13 @@ class FuncionarioMensalista(Funcionario):
     def __str__(self):
         return super().__str__() + f", Salário Base: {self.salario_base}"
 
+
 class App:
     def __init__(self, root):
         self.root = root
         self.root.title("Cadastro de Funcionários")
         self.root.geometry("800x600")
+        self.root.configure(bg="#f5f5f5")
 
         self.nome_var = tk.StringVar()
         self.matricula_var = tk.StringVar()
@@ -160,88 +165,111 @@ class App:
         self.horas_dia_var = tk.StringVar()
         self.tipo_funcionario_var = tk.StringVar(value="Mensalista")
 
+        self.funcionarios = []
+
         # Criar o layout
         self.create_widgets()
 
-        self.funcionarios = []
+
 
     def create_widgets(self):
+        # Título
+        title = tk.Label(self.root, text="Cadastro de Funcionários", font=("Helvetica", 16, "bold"), bg="#f5f5f5")
+        title.pack(pady=10)
+
         # Seção Dados Pessoais
-        dados_pessoais_frame = ttk.LabelFrame(self.root, text="Dados Pessoais")
-        dados_pessoais_frame.place(x=10, y=10, width=780, height=200)
+        dados_pessoais_frame = ttk.LabelFrame(self.root, text="Dados Pessoais", padding=10)
+        dados_pessoais_frame.pack(pady=10, padx=20, fill=tk.X)
 
-        ttk.Label(dados_pessoais_frame, text="Nome").grid(row=0, column=0, padx=10, pady=5)
-        tk.Entry(dados_pessoais_frame, textvariable=self.nome_var).grid(row=0, column=1, padx=10, pady=5)
-
-        ttk.Label(dados_pessoais_frame, text="Matrícula").grid(row=0, column=2, padx=10, pady=5)
-        tk.Entry(dados_pessoais_frame, textvariable=self.matricula_var).grid(row=0, column=3, padx=10, pady=5)
-
-        ttk.Label(dados_pessoais_frame, text="Número de Projetos").grid(row=1, column=0, padx=10, pady=5)
-        tk.Entry(dados_pessoais_frame, textvariable=self.num_proj_var).grid(row=1, column=1, padx=10, pady=5)
+        self.nome_entry = self.create_label_entry(dados_pessoais_frame, "Nome", self.nome_var, 0, 0)
+        self.matricula_entry = self.create_label_entry(dados_pessoais_frame, "Matrícula", self.matricula_var, 0, 2)
+        self.num_proj_entry = self.create_label_entry(dados_pessoais_frame, "Número de Projetos", self.num_proj_var, 1, 0)
 
         # Seção Tipo de Funcionário
-        tipo_frame = ttk.LabelFrame(self.root, text="Tipo de Funcionário")
-        tipo_frame.place(x=10, y=220, width=780, height=50)
+        tipo_frame = ttk.LabelFrame(self.root, text="Tipo de Funcionário", padding=10)
+        tipo_frame.pack(pady=10, padx=20, fill=tk.X)
 
-        ttk.Label(tipo_frame, text="Selecionar Tipo").grid(row=0, column=0, padx=10, pady=5)
-        tipo_combobox = ttk.Combobox(tipo_frame, textvariable=self.tipo_funcionario_var, 
-                                      values=["Comissário", "Horalista", "Mensalista"], state="readonly")
-        tipo_combobox.grid(row=0, column=1, padx=10, pady=5)
+        tk.Label(tipo_frame, text="Selecionar Tipo", bg="#f5f5f5").grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
+        tipo_combobox = ttk.Combobox(tipo_frame, textvariable=self.tipo_funcionario_var,
+                                     values=["Comissário", "Horalista", "Mensalista"], state="readonly")
+        tipo_combobox.grid(row=0, column=1, padx=10, pady=5, sticky=tk.W)
         tipo_combobox.bind("<<ComboboxSelected>>", self.atualizar_campos)
 
         # Seção Dados Específicos de Funcionário
-        funcionario_frame = ttk.LabelFrame(self.root, text="Dados do Funcionário")
-        funcionario_frame.place(x=10, y=270, width=780, height=150)
+        funcionario_frame = ttk.LabelFrame(self.root, text="Dados do Funcionário", padding=10)
+        funcionario_frame.pack(pady=10, padx=20, fill=tk.X)
 
-        ttk.Label(funcionario_frame, text="Salário Base").grid(row=0, column=0, padx=10, pady=5)
-        self.salario_entry = tk.Entry(funcionario_frame, textvariable=self.salario_var)
-        self.salario_entry.grid(row=0, column=1, padx=10, pady=5)
+        self.salario_entry = self.create_label_entry(funcionario_frame, "Salário Base", self.salario_var, 0, 0)
+        self.comissao_entry = self.create_label_entry(funcionario_frame, "Comissão (%)", self.comissao_var, 0, 2)
+        self.total_vendas_entry = self.create_label_entry(funcionario_frame, "Total de Vendas", self.total_vendas_var, 1, 0)
+        self.valor_hora_entry = self.create_label_entry(funcionario_frame, "Valor por Hora", self.valor_hora_var, 1, 2)
+        self.horas_dia_entry = self.create_label_entry(funcionario_frame, "Horas por Dia", self.horas_dia_var, 2, 0)
 
-        ttk.Label(funcionario_frame, text="Comissão (%)").grid(row=0, column=2, padx=10, pady=5)
-        self.comissao_entry = tk.Entry(funcionario_frame, textvariable=self.comissao_var)
-        self.comissao_entry.grid(row=0, column=3, padx=10, pady=5)
+        # Botões na parte inferior
+        button_frame = tk.Frame(self.root, bg="#f5f5f5")
+        button_frame.pack(pady=20)
 
-        ttk.Label(funcionario_frame, text="Total de Vendas").grid(row=1, column=0, padx=10, pady=5)
-        self.total_vendas_entry = tk.Entry(funcionario_frame, textvariable=self.total_vendas_var)
-        self.total_vendas_entry.grid(row=1, column=1, padx=10, pady=5)
+        cadastrar_btn = tk.Button(button_frame, text="Cadastrar Funcionário", bg="#32CD32", fg="white",
+                                  font=("Helvetica", 12, "bold"), relief=tk.FLAT, command=self.cadastrar_funcionario)
+        cadastrar_btn.grid(row=0, column=0, padx=10)
 
-        ttk.Label(funcionario_frame, text="Valor por Hora").grid(row=1, column=2, padx=10, pady=5)
-        self.valor_hora_entry = tk.Entry(funcionario_frame, textvariable=self.valor_hora_var)
-        self.valor_hora_entry.grid(row=1, column=3, padx=10, pady=5)
+        processar_btn = tk.Button(button_frame, text="Processar Pagamentos", bg="#1E90FF", fg="white",
+                                  font=("Helvetica", 12, "bold"), relief=tk.FLAT, command=self.processar_pagamentos)
+        processar_btn.grid(row=0, column=1, padx=10)
 
-        ttk.Label(funcionario_frame, text="Horas por Dia").grid(row=2, column=0, padx=10, pady=5)
-        self.horas_dia_entry = tk.Entry(funcionario_frame, textvariable=self.horas_dia_var)
-        self.horas_dia_entry.grid(row=2, column=1, padx=10, pady=5)
-
-        # Botão de cadastro
-        tk.Button(self.root, text="Cadastrar Funcionário", command=self.cadastrar_funcionario).place(x=300, y=430)
-
-        # Botão para processar os pagamentos
-        tk.Button(self.root, text="Processar Pagamentos", command=self.processar_pagamentos).place(x=460, y=430)
-
-        # Atualiza os campos com base no tipo selecionado inicialmente
+        # Inicializa o estado dos campos
         self.atualizar_campos()
+
+    def create_label_entry(self, parent, text, var, row, col):
+        label = tk.Label(parent, text=text, font=("Helvetica", 12), bg="#f5f5f5")
+        label.grid(row=row, column=col, padx=10, pady=5, sticky=tk.W)
+        entry = tk.Entry(parent, textvariable=var, font=("Helvetica", 12), relief=tk.FLAT, bd=2)
+        entry.grid(row=row, column=col + 1, padx=10, pady=5)
+        return entry
 
     def atualizar_campos(self, event=None):
         tipo = self.tipo_funcionario_var.get()
+        # Desabilitar ou habilitar campos com base no tipo de funcionário selecionado
         if tipo == "Comissário":
-            self.salario_entry.config(state="normal")
-            self.comissao_entry.config(state="normal")
-            self.total_vendas_entry.config(state="normal")
-            self.valor_hora_entry.config(state="disabled")
-            self.horas_dia_entry.config(state="disabled")
+            self.set_entry_state(self.salario_entry, "normal")
+            self.set_entry_state(self.comissao_entry, "normal")
+            self.set_entry_state(self.total_vendas_entry, "normal")
+            self.set_entry_state(self.valor_hora_entry, "disabled")
+            self.set_entry_state(self.horas_dia_entry, "disabled")
         elif tipo == "Horalista":
-            self.salario_entry.config(state="disabled")
-            self.comissao_entry.config(state="disabled")
-            self.total_vendas_entry.config(state="disabled")
-            self.valor_hora_entry.config(state="normal")
-            self.horas_dia_entry.config(state="normal")
+            self.set_entry_state(self.salario_entry, "disabled")
+            self.set_entry_state(self.comissao_entry, "disabled")
+            self.set_entry_state(self.total_vendas_entry, "disabled")
+            self.set_entry_state(self.valor_hora_entry, "normal")
+            self.set_entry_state(self.horas_dia_entry, "normal")
         else:  # Mensalista
-            self.salario_entry.config(state="normal")
-            self.comissao_entry.config(state="disabled")
-            self.total_vendas_entry.config(state="disabled")
-            self.valor_hora_entry.config(state="disabled")
-            self.horas_dia_entry.config(state="disabled")
+            self.set_entry_state(self.salario_entry, "normal")
+            self.set_entry_state(self.comissao_entry, "disabled")
+            self.set_entry_state(self.total_vendas_entry, "disabled")
+            self.set_entry_state(self.valor_hora_entry, "disabled")
+            self.set_entry_state(self.horas_dia_entry, "disabled")
+
+    def set_entry_state(self, entry, state):
+        entry.config(state=state)
+
+    def get_float_value(self, var, default=0.0):
+        try:
+            value = float(var.get().strip())
+            return value if value > 0 else default
+        except ValueError:
+            return default
+    
+    def limpar_campos(self):
+        self.nome_var.set("")
+        self.matricula_var.set("")
+        self.num_proj_var.set("")
+        self.salario_var.set("")
+        self.comissao_var.set("")
+        self.total_vendas_var.set("")
+        self.valor_hora_var.set("")
+        self.horas_dia_var.set("")
+        self.tipo_funcionario_var.set("Mensalista")
+        self.atualizar_campos()
 
     def cadastrar_funcionario(self):
         try:
@@ -251,30 +279,33 @@ class App:
             
             tipo = self.tipo_funcionario_var.get()
             if tipo == "Comissário":
-                salario = float(self.salario_var.get()) if self.salario_var.get().strip() else 0.0
-                comissao = float(self.comissao_var.get()) / 100 if self.comissao_var.get().strip() else 0.0
-                total_vendas = float(self.total_vendas_var.get()) if self.total_vendas_var.get().strip() else 0.0
-                funcionario = FuncionarioComissario(nome, matricula, num_proj, salario, comissao, total_vendas)
+                salario_base = self.get_float_value(self.salario_var)
+                comissao = self.get_float_value(self.comissao_var) / 100
+                total_vendas = self.get_float_value(self.total_vendas_var)
+                funcionario = FuncionarioComissario(nome, matricula, num_proj, salario_base, comissao, total_vendas)
+                salario_total = funcionario.calcular_salario()
 
             elif tipo == "Horalista":
-                valor_hora = float(self.valor_hora_var.get()) if self.valor_hora_var.get().strip() else 0.0
-                horas_dia = float(self.horas_dia_var.get()) if self.horas_dia_var.get().strip() else 0.0
+                valor_hora = self.get_float_value(self.valor_hora_var)
+                horas_dia = self.get_float_value(self.horas_dia_var)
                 funcionario = FuncionarioHoralista(nome, matricula, num_proj, valor_hora, horas_dia)
+                salario_total = funcionario.calcular_salario()
 
             else:  # Mensalista
-                salario = float(self.salario_var.get()) if self.salario_var.get() else 0.0
-                funcionario = FuncionarioMensalista(nome, matricula, num_proj, salario)
+                salario_base = self.get_float_value(self.salario_var)
+                funcionario = FuncionarioMensalista(nome, matricula, num_proj, salario_base)
+                salario_total = funcionario.calcular_salario()
 
-            # Adicionar o funcionário à lista e salvar em um arquivo
+            funcionario.salário_Total = salario_total
             self.funcionarios.append(funcionario)
             self.salvar_funcionario(funcionario)
+            self.limpar_campos()
             messagebox.showinfo("Sucesso", "Funcionário cadastrado com sucesso!")
 
         except ValueError as e:
             messagebox.showerror("Erro", f"Erro ao cadastrar funcionário: {str(e)}")
 
     def salvar_funcionario(self, funcionario):
-        # Salvar os dados do funcionário em um arquivo JSON
         data = {
             "nome": funcionario.nome,
             "matricula": funcionario.matricula,
@@ -283,7 +314,8 @@ class App:
             "comissao": getattr(funcionario, 'comissao', None),
             "total_vendas": getattr(funcionario, 'total_vendas', None),
             "valor_por_hora": getattr(funcionario, 'valor_por_hora', None),
-            "horas_por_dia": getattr(funcionario, 'horas_por_dia', None)
+            "horas_por_dia": getattr(funcionario, 'horas_por_dia', None),
+            "salário_Total": funcionario.salário_Total
         }
 
         try:
@@ -293,11 +325,44 @@ class App:
             messagebox.showerror("Erro", f"Erro ao salvar dados: {str(e)}")
     
     def processar_pagamentos(self):
-        resultado = ""
-        for funcionario in self.funcionarios:
-            resultado += f"Funcionário: {funcionario}\nSalário: R$ {funcionario.calcular_salario()}\n{'-'*50}\n"
+        try:
+            with open('funcionarios.json', 'r') as f:
+                funcionarios_data = [json.loads(line) for line in f]
 
-        messagebox.showinfo("Pagamentos", resultado)
+            dados_excel = []
+            resultado = ""
+
+            for data in funcionarios_data:
+                nome = data.get("nome")
+                tipo = "Mensalista" if data.get("salario_base") else "Comissário" if data.get("comissao") else "Horalista"
+                salario = data.get("salário_Total", "N/A")
+                numero_de_projetos = data.get("numero_de_projetos", 0)
+
+                # Adiciona os dados na planilha Excel
+                dados_excel.append({
+                    "Nome": nome,
+                    "Tipo": tipo,
+                    "Salário Total": salario,
+                    "Tem Projetos": "Sim" if numero_de_projetos > 0 else "Não"
+                })
+
+                # Adiciona ao resultado que será exibido na mensagem
+                resultado += (
+                    f"Funcionário: {nome}\n"
+                    f"Tipo: {tipo}\n"
+                    f"Salário: R$ {salario}\n"
+                    f"Tem Projetos: {'Sim' if numero_de_projetos > 0 else 'Não'}\n"
+                    f"{'-'*50}\n"
+                )
+
+            # Cria o DataFrame e salva no Excel
+            df = pd.DataFrame(dados_excel)
+            df.to_excel("pagamentos_realizados.xlsx", index=False)
+
+            # Mostra uma mensagem com os resultados resumidos
+            messagebox.showinfo("Pagamentos", resultado)
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao processar pagamentos: {str(e)}")
 
 
 if __name__ == "__main__":
