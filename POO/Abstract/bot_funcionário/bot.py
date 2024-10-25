@@ -29,6 +29,61 @@ from botcity.maestro import *
 
 # Disable errors if we are not connected to Maestro
 BotMaestroSDK.RAISE_NOT_CONNECTED = False
+import json
+
+
+json_data = '''
+[
+  {
+    "nome": "João Silva",
+    "matricula": "001",
+    "numeroProjetos": 3,
+    "tipoFuncionario": "Mensalista",
+    "salarioBase": 3000.00,
+    "comissao": 0,
+    "totalVendas": 0,
+    "valorHora": 0,
+    "horasPorDia": 0
+  },
+  {
+    "nome": "Maria Oliveira",
+    "matricula": "002",
+    "numeroProjetos": 5,
+    "tipoFuncionario": "Comissionado",
+    "salarioBase": 1500.00,
+    "comissao": 5,
+    "totalVendas": 20000.00,
+    "valorHora": 0,
+    "horasPorDia": 0
+  },
+  {
+    "nome": "Carlos Souza",
+    "matricula": "003",
+    "numeroProjetos": 2,
+    "tipoFuncionario": "Horista",
+    "salarioBase": 0,
+    "comissao": 0,
+    "totalVendas": 0,
+    "valorHora": 20.00,
+    "horasPorDia": 8
+  }
+]
+'''
+
+def ler_funcionarios(json_data):
+    try:
+        # Carrega o JSON e transforma em uma lista de dicionários
+        funcionarios = json.loads(json_data)
+        return funcionarios
+    except json.JSONDecodeError as e:
+        print(f"Erro ao ler o JSON: {e}")
+        return []
+
+
+def preencher_campo(bot, lista):
+
+    
+
 
 def main():
     # Runner passes the server url, the id of the task being executed,
@@ -41,23 +96,10 @@ def main():
     print(f"Task Parameters are: {execution.parameters}")
 
     bot = DesktopBot()
+
+    bot.execute(r"C:\Users\dsg02\OneDrive\Documentos\GitHub\Aulas-HyperAutomation\POO\Abstract\tkinter\dist\dani.exe")
     
-    
-    
-    if not bot.find( "campo_nome", matching=0.97, waiting_time=10000):
-        not_found("campo_nome")
-    bot.paste("Daniele Simas")
-     
-    if not bot.find( "campo_matricula", matching=0.97, waiting_time=10000):
-         not_found("campo_matricula")
-    bot.paste("123")
-     
-    if not bot.find( "campo_projetos", matching=0.97, waiting_time=10000):
-         not_found("campo_projetos")
-    bot.click_relative(11, 7)
-     
-    bot.paste(0)
-     
+
      
      
      
