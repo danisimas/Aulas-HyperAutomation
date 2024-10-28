@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciamento de Veículos</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        width: 400px;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      label {
+        font-weight: bold;
+        color: #555;
+        margin-top: 15px;
+        display: block;
+      }
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        width: 48%;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .output {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Gerenciamento de Veículos</h2>
+      <form id="vehicleForm">
+        <label for="vehicleName">Nome do Veículo:</label>
+        <input type="text" id="vehicleName" required />
+
+        <label for="vehicleYear">Ano:</label>
+        <input type="number" id="vehicleYear" min="1900" max="2099" required />
+
+        <label for="rentalValue">Valor Diário de Aluguel (R$):</label>
+        <input type="number" id="rentalValue" min="0" step="0.01" required />
+
+        <label for="rentalDays">Número de Dias:</label>
+        <input type="number" id="rentalDays" min="1" required />
+
+        <label for="vehicleType">Tipo do Veículo:</label>
+        <select id="vehicleType" onchange="toggleExtraField()" required>
+          <option value="">Selecione</option>
+          <option value="carro">Carro</option>
+          <option value="moto">Moto</option>
+        </select>
+
+        <div id="extraField">
+          <label id="extraFieldLabel" for="extraFieldInput"></label>
+          <input type="text" id="extraFieldInput" />
+        </div>
+
+        <div class="buttons">
+          <button type="button" onclick="addVehicle()">
+            Adicionar Veículo
+          </button>
+          <button type="button" onclick="calculateRental()">
+            Calcular Aluguel
+          </button>
+        </div>
+      </form>
+      <div class="output" id="output"></div>
+    </div>
+
+    <script>
+      function toggleExtraField() {
+        const vehicleType = document.getElementById("vehicleType").value;
+        const extraField = document.getElementById("extraField");
+        const extraFieldLabel = document.getElementById("extraFieldLabel");
+        if (vehicleType === "carro") {
+          extraField.style.display = "block";
+          extraFieldLabel.textContent = "Tipo de Combustível:";
+          document.getElementById("extraFieldInput").value = "";
+        } else if (vehicleType === "moto") {
+          extraField.style.display = "block";
+          extraFieldLabel.textContent = "Cilindrada:";
+          document.getElementById("extraFieldInput").value = "";
+        } else {
+          extraField.style.display = "none";
+        }
+      }
+
+      function addVehicle() {
+        const name = document.getElementById("vehicleName").value;
+        const year = document.getElementById("vehicleYear").value;
+        const rentalValue = document.getElementById("rentalValue").value;
+        const vehicleType = document.getElementById("vehicleType").value;
+        const extra = document.getElementById("extraFieldInput").value;
+
+        if (vehicleType === "carro") {
+          document.getElementById(
+            "output"
+          ).innerText = `Carro "${name}" de ${year}, combustível: ${extra}, valor diário: R$${rentalValue} adicionado!`;
+        } else if (vehicleType === "moto") {
+          document.getElementById(
+            "output"
+          ).innerText = `Moto "${name}" de ${year}, cilindrada: ${extra}cc, valor diário: R$${rentalValue} adicionado!`;
+        } else {
+          document.getElementById("output").innerText =
+            "Selecione um tipo de veículo.";
+        }
+      }
+
+      function calculateRental() {
+        const rentalValue = parseFloat(
+          document.getElementById("rentalValue").value
+        );
+        const days = parseInt(document.getElementById("rentalDays").value);
+        if (!isNaN(rentalValue) && !isNaN(days)) {
+          const total = rentalValue * days;
+          document.getElementById(
+            "output"
+          ).innerText = `Valor total para ${days} dias de aluguel: R$${total.toFixed(
+            2
+          )}`;
+        } else {
+          document.getElementById("output").innerText =
+            "Preencha os campos corretamente.";
+        }
+      }
+    </script>
+  </body>
+</html>
