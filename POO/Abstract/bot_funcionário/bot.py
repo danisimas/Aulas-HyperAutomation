@@ -70,19 +70,8 @@ json_data = '''
 ]
 '''
 
-def ler_funcionarios(json_data):
-    try:
-        # Carrega o JSON e transforma em uma lista de dicionários
-        funcionarios = json.loads(json_data)
-        return funcionarios
-    except json.JSONDecodeError as e:
-        print(f"Erro ao ler o JSON: {e}")
-        return []
 
-
-def preencher_campo(bot, lista):
-
-    
+   
 
 
 def main():
