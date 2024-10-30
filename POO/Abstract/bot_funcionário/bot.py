@@ -13,7 +13,10 @@ ModuleNotFoundError: No module named 'botcity'
 ```
 
 This means that you are likely using a different Python interpreter than the one used to install the dependencies.
-To fix this, you can either:
+To fix this, you can either:if not bot.find( "campo_projetos", matching=0.97, waiting_time=10000):
+    not_found("campo_projetos")
+bot.click()
+
 - Use the same interpreter as your IDE and install your bot with `pip install --upgrade -r requirements.txt`
 - Use the same interpreter as the one used to install the bot (`pip install --upgrade -r requirements.txt`)
 
@@ -39,7 +42,7 @@ json_data = '''
     "matricula": "001",
     "numeroProjetos": 3,
     "tipoFuncionario": "Mensalista",
-    "salarioBase": 3000.00,
+    "salarioBase": 3000,
     "comissao": 0,
     "totalVendas": 0,
     "valorHora": 0,
@@ -70,8 +73,103 @@ json_data = '''
 ]
 '''
 
+funcionarios = json.loads(json_data)
 
-   
+def preencher_campos(bot):
+    for func in funcionarios:
+      if not bot.find( "campo_nome_func", matching=0.97, waiting_time=10000):
+          not_found("campo_nome_func")
+      bot.click()
+      # 'kb_type' method receives text to be typed.
+      bot.kb_type(str(func['nome']))
+      
+      if not bot.find( "campo_matricula_func", matching=0.97, waiting_time=10000):
+          not_found("campo_matricula_func")
+      bot.click()
+
+      bot.kb_type(str(func['matricula']))
+      
+      if not bot.find( "campo_projetos", matching=0.97, waiting_time=10000):
+          not_found("campo_projetos")
+      bot.click()
+      bot.kb_type(str(func['numeroProjetos']))
+      
+      tipo = str(func['tipoFuncionario'])
+      
+      if tipo == "Mensalista":
+        
+          
+          if not bot.find( "campo_mensalista", matching=0.97, waiting_time=10000):
+              not_found("campo_mensalista")
+          bot.click()
+          
+         
+          if not bot.find( "salario_base", matching=0.97, waiting_time=10000):
+              not_found("salario_base")
+          bot.click()
+          bot.kb_type(str(func['salarioBase']))
+
+          if not bot.find( "botão_cad_func_mensal", matching=0.97, waiting_time=10000):
+              not_found("botão_cad_func_mensal")
+          bot.click()
+          if not bot.find( "fechar_campo_botão", matching=0.97, waiting_time=10000):
+              not_found("fechar_campo_botão")
+          bot.click()
+      
+      elif tipo == "Horalista":
+          
+          if not bot.find( "campo_horalista", matching=0.97, waiting_time=10000):
+              not_found("campo_horalista")
+          bot.click()
+
+          if not bot.find( "campo_valor_hora", matching=0.97, waiting_time=10000):
+              not_found("campo_valor_hora")
+          bot.click()
+          bot.kb_type(str(func['valorHora']))
+          if not bot.find( "campo_horas_dia", matching=0.97, waiting_time=10000):
+              not_found("campo_horas_dia")
+          bot.click()
+          bot.kb_type(str(func['horasPorDia']))
+          
+          if not bot.find( "botão_cad_func_mensal", matching=0.97, waiting_time=10000):
+             not_found("botão_cad_func_mensal")
+          bot.click()
+          if not bot.find( "fechar_campo_botão", matching=0.97, waiting_time=10000):
+             not_found("fechar_campo_botão")
+          bot.click()
+      else:
+         
+          if not bot.find( "comissario", matching=0.97, waiting_time=10000):
+              not_found("comissario")
+              bot.click()
+         
+          if not bot.find( "salario_base", matching=0.97, waiting_time=10000):
+              not_found("salario_base")
+          bot.click()
+          bot.kb_type(str(func['salarioBase']))
+          
+          if not bot.find( "campo_comissao", matching=0.97, waiting_time=10000):
+              not_found("campo_comissao")
+          bot.click()
+          bot.kb_type(str(func['comissao']))
+          
+          if not bot.find( "campo_total_vendas", matching=0.97, waiting_time=10000):
+              not_found("campo_total_vendas")
+          bot.click()
+          bot.kb_type(str(func['total_vendas']))
+
+          if not bot.find( "botão_cad_func_mensal", matching=0.97, waiting_time=10000):
+              not_found("botão_cad_func_mensal")
+          bot.click()
+          if not bot.find( "fechar_campo_botão", matching=0.97, waiting_time=10000):
+              not_found("fechar_campo_botão")
+          bot.click()
+        
+          
+       
+     
+        
+
 
 
 def main():
@@ -86,8 +184,9 @@ def main():
 
     bot = DesktopBot()
 
-    bot.execute(r"C:\Users\dsg02\OneDrive\Documentos\GitHub\Aulas-HyperAutomation\POO\Abstract\tkinter\dist\dani.exe")
+    bot.execute(r"C:\\Users\\matutino\\Downloads\\Daniele Simas\\Aulas-HyperAutomation\\POO\\Abstract\\tkinter\\dist\\dani.exe")
     
+    preencher_campos(bot)
 
      
      
@@ -108,3 +207,6 @@ def not_found(label):
 
 if __name__ == '__main__':
     main()
+
+
+
