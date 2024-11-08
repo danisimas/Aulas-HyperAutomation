@@ -42,8 +42,7 @@
       }
 
       .form-container input[type="text"],
-      .form-container input[type="number"],
-      .form-container select {
+      .form-container input[type="number"] {
         width: 100%;
         padding: 10px;
         margin-bottom: 15px;
@@ -69,6 +68,21 @@
 
       .form-container button:hover {
         background-color: #45a049;
+      }
+
+      /* Estilo dos radio buttons */
+      .status-radio-buttons {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .status-radio-buttons label {
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+
+      .status-radio-buttons input[type="radio"] {
+        margin-right: 10px;
       }
     </style>
   </head>
@@ -104,22 +118,65 @@
           placeholder="Digite a quantidade"
         />
 
-        <label for="status">Status do Pedido:</label>
-        <select id="status" name="status">
-          <option value="Novo">Novo</option>
-          <option value="Processando">Processando</option>
-          <option value="Enviado">Enviado</option>
-        </select>
+        <label>Status do Pedido:</label>
+        <div class="status-radio-buttons">
+          <label>
+            <input
+              type="radio"
+              id="statusNovo"
+              name="status"
+              value="Novo"
+              required
+            />
+            Novo
+          </label>
+          <label>
+            <input
+              type="radio"
+              id="statusProcessando"
+              name="status"
+              value="Processando"
+            />
+            Processando
+          </label>
+          <label>
+            <input
+              type="radio"
+              id="statusEnviado"
+              name="status"
+              value="Enviado"
+            />
+            Enviado
+          </label>
+        </div>
 
-        <button type="submit" onclick="salvarPedido()">Cadastrar Pedido</button>
+        <button type="submit">Cadastrar Pedido</button>
       </form>
     </div>
 
     <script>
-      function salvarPedido() {
+      // Função para salvar o pedido sem alert
+      document.getElementById("formPedido").addEventListener("submit", function (event) {
+        event.preventDefault(); // Impede o envio do formulário para fins de demonstração
+
+        // Coleta os dados do formulário
+        const cliente = document.getElementById("cliente").value;
+        const produto = document.getElementById("produto").value;
+        const quantidade = document.getElementById("quantidade").value;
+        const status = document.querySelector('input[name="status"]:checked').value;
+
+        // Aqui você pode fazer algo com os dados coletados, como enviar para uma API ou salvar em um banco de dados
+        console.log({
+          cliente: cliente,
+          produto: produto,
+          quantidade: quantidade,
+          status: status
+        });
+
+        // Após salvar os dados, podemos limpar o formulário ou exibir uma confirmação
         alert("Pedido cadastrado com sucesso!");
-        // Aqui você pode adicionar código JavaScript para salvar o pedido em um arquivo JSON ou enviar os dados para uma API.
-      }
+        document.getElementById("formPedido").reset(); // Limpa o formulário após o envio
+      });
     </script>
   </body>
 </html>
