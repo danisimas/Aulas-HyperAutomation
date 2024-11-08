@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico de Pedidos</title>
+    <style>
+        /* Estilo geral da página */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Estilo da tabela */
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        /* Botão de ação */
+        .button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        /* Contêiner para o botão */
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Histórico de Pedidos</h1>
+
+    <!-- Tabela que exibirá os pedidos -->
+    <table id="tabelaPedidos">
+        <thead>
+            <tr>
+                <th>ID do Pedido</th>
+                <th>Cliente</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Status</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Os pedidos serão carregados aqui através de JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Botão para recarregar a lista de pedidos -->
+    <div class="button-container">
+        <button class="button" onclick="extrairPedidos()">Atualizar Pedidos</button>
+    </div>
+
+    <script>
+        // Função para carregar os pedidos (simulada)
+        function extrairPedidos() {
+            // Exemplo de dados de pedidos
+            const pedidos = [
+                { id: 1, cliente: "João Silva", produto: "Camiseta", quantidade: 2, status: "Enviado", total: 79.90 },
+                { id: 2, cliente: "Maria Oliveira", produto: "Calça Jeans", quantidade: 1, status: "Processando", total: 129.90 },
+                { id: 3, cliente: "Carlos Souza", produto: "Tênis", quantidade: 1, status: "Novo", total: 199.90 },
+                { id: 4, cliente: "Ana Costa", produto: "Relógio", quantidade: 1, status: "Enviado", total: 249.90 },
+                { id: 5, cliente: "Luís Pereira", produto: "Bolsa", quantidade: 2, status: "Novo", total: 180.00 }
+            ];
+
+            // Seleciona o corpo da tabela onde os dados serão inseridos
+            const tabelaBody = document.querySelector("#tabelaPedidos tbody");
+            tabelaBody.innerHTML = ""; // Limpa a tabela antes de adicionar os novos dados
+
+            // Insere os dados dos pedidos na tabela
+            pedidos.forEach(pedido => {
+                const row = document.createElement("tr");
+
+                // Cria e preenche as células da tabela
+                row.innerHTML = `
+                    <td>${pedido.id}</td>
+                    <td>${pedido.cliente}</td>
+                    <td>${pedido.produto}</td>
+                    <td>${pedido.quantidade}</td>
+                    <td>${pedido.status}</td>
+                    <td>R$ ${pedido.total.toFixed(2)}</td>
+                `;
+
+                // Adiciona a linha na tabela
+                tabelaBody.appendChild(row);
+            });
+        }
+
+        // Carrega os pedidos ao abrir a página
+        window.onload = extrairPedidos;
+    </script>
+</body>
+</html>
